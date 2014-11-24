@@ -1,8 +1,6 @@
 %{?scl:%scl_package rubygem-%{gem_name}}
 %{!?scl:%global pkg_name %{name}}
 
-%global	rubyabi		1.9.1
-
 %global	gem_name	net-http-persistent
 
 Summary:	Persistent connections using Net::HTTP plus a speed fix
