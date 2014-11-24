@@ -2,26 +2,25 @@
 %{!?scl:%global pkg_name %{name}}
 
 %global gem_name bundler
-%global rubyabi 1.9.1
 
 %{!?enable_test: %global enable_test 0}
 
 Summary: Library and utilities to manage a Ruby application's gem dependencies
 Name: %{?scl_prefix}rubygem-%{gem_name}
-Version: 1.3.5
-Release: 3%{?dist}
+Version: 1.7.7
+Release: 1%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://gembundler.com
 Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
 Patch1: bundler-add-support-for-binary-extensions-in-dedicated-folde.patch
-Requires: %{?scl_prefix}ruby(abi) = %{rubyabi}
-Requires: %{?scl_prefix}ruby(rubygems)
-Requires: %{?scl_prefix}rubygem(thor)
-Requires: %{?scl_prefix}rubygem(net-http-persistent)
-BuildRequires: %{?scl_prefix}ruby(abi) = %{rubyabi}
-BuildRequires: %{?scl_prefix}rubygems-devel
-BuildRequires: %{?scl_prefix}ruby
+Requires:       %{?scl_prefix}ruby(release)
+Requires:       %{?scl_prefix}ruby(rubygems)
+Requires:       %{?scl_prefix}rubygem(thor)
+Requires:       %{?scl_prefix}rubygem(net-http-persistent)
+Requires:       %{?scl_prefix}ruby(release)
+BuildRequires:  %{?scl_prefix}rubygems-devel
+BuildRequires:  %{?scl_prefix}ruby(release)
 %if 0%{enable_test} > 0
 BuildRequires: %{?scl_prefix}ruby-devel
 BuildRequires: %{?scl_prefix}rubygem(thor)
@@ -142,6 +141,9 @@ EOF` rspec spec/
 %doc %{gem_docdir}
 
 %changelog
+* Mon Nov 24 2014 Joe Rafaniello <jrafanie@redhat.com> - 1.7.7-1
+- Update to upstream 1.7.7.
+
 * Wed Sep 05 2013 Mo Morsi <mmorsi@redhat.com> - 1.3.5-3
 - Rebuilt for rhel
 
