@@ -3,7 +3,6 @@
 
 # Generated from thor-0.12.0.gem by gem2rpm -*- rpm-spec -*-
 %global gem_name thor
-%global rubyabi 1.9.1
 
 # There are not all test dependencies are available in RHEL.
 %global enable_test 0%{!?rhel:1}
@@ -16,10 +15,11 @@ Group: Development/Languages
 License: MIT
 URL: http://whatisthor.com/
 Source0: http://rubygems.org/downloads/%{gem_name}-%{version}.gem
-Requires: %{?scl_prefix}ruby(rubygems)
-Requires: %{?scl_prefix}ruby(abi) = %{rubyabi}
-BuildRequires: %{?scl_prefix}rubygems-devel
-BuildRequires: %{?scl_prefix}ruby(abi) = %{rubyabi}
+Requires:       %{?scl_prefix}ruby(release)
+Requires:       %{?scl_prefix}ruby(rubygems)
+BuildRequires:  %{?scl_prefix}ruby(release)
+BuildRequires:  %{?scl_prefix}rubygems-devel
+BuildRequires:  %{?scl_prefix}ruby(release)
 %if %{enable_test} > 0
 BuildRequires: %{?scl_prefix}rubygem(rspec)
 BuildRequires: %{?scl_prefix}rubygem(fakeweb)
