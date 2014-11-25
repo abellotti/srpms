@@ -40,9 +40,9 @@ This package contains documentation for %{pkg_name}.
 %prep
 %setup -n %{pkg_name}-%{version} -q -c -T
 
-%{?scl:scl enable %{scl} "}
-%gem_install -n %{SOURCE0}
-%{?scl:"}
+%{?scl:scl enable %scl - << \EOF}
+ %gem_install -n %{SOURCE0}
+%{?scl:EOF}
 
 pushd .%{gem_instdir}
 %patch0
