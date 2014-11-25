@@ -5,6 +5,19 @@
 
 %{!?enable_test: %global enable_test 0}
 
+# Macro for symlinking system RubyGems as a replacement for removed vendored libs
+%global symlink_vendored_libs \
+for dependency in \\\
+  net-http-persistent \\\
+  thor \
+do \
+  for fileordir in \\\
+    %{gem_dir}/gems/$dependency-*/lib/* \
+  do \
+    ln -s -f $fileordir %{gem_libdir}/bundler/vendor/$(basename "$fileordir") \
+  done \
+done
+
 Summary: Library and utilities to manage a Ruby application's gem dependencies
 Name: %{?scl_prefix}rubygem-%{gem_name}
 Version: 1.7.7
@@ -14,18 +27,19 @@ License: MIT
 URL: http://gembundler.com
 Source0: http://rubygems.org/gems/%{gem_name}-%{version}.gem
 Patch1: bundler-add-support-for-binary-extensions-in-dedicated-folde.patch
-Requires:       %{?scl_prefix}ruby(release)
-Requires:       %{?scl_prefix}ruby(rubygems)
-Requires:       %{?scl_prefix}rubygem(thor)
-Requires:       %{?scl_prefix}rubygem(net-http-persistent)
-Requires:       %{?scl_prefix}ruby(release)
-BuildRequires:  %{?scl_prefix}rubygems-devel
-BuildRequires:  %{?scl_prefix}ruby(release)
+
+Requires: %{?scl_prefix}ruby(release)
+Requires: %{?scl_prefix}ruby(rubygems)
+Requires: %{?scl_prefix}rubygem(thor)
+Requires: %{?scl_prefix}rubygem(net-http-persistent)
+BuildRequires: %{?scl_prefix}ruby(release)
+BuildRequires: %{?scl_prefix}rubygems-devel
+BuildRequires: %{?scl_prefix}ruby
 %if 0%{enable_test} > 0
 BuildRequires: %{?scl_prefix}ruby-devel
+BuildRequires: %{?scl_prefix}rubygem(rspec)
 BuildRequires: %{?scl_prefix}rubygem(thor)
 BuildRequires: %{?scl_prefix}rubygem(net-http-persistent)
-BuildRequires: %{?scl_prefix}rubygem(rspec)
 BuildRequires: %{?scl_prefix}rubygem(psych)
 BuildRequires: git sudo
 %endif
@@ -46,13 +60,10 @@ Documentation for %{name}
 
 
 %prep
-%setup -n %{pkg_name}-%{version} -q -c -T
-mkdir -p .%{gem_dir}
-%{?scl:scl enable %{scl} "}
-gem install --local --install-dir .%{gem_dir} \
-            --bindir .%{_bindir} \
-            --force %{SOURCE0}
-%{?scl:"}
+%setup -q -c -T
+%{?scl:scl enable %scl - << \EOF}
+%gem_install -n %{SOURCE0}
+%{?scl:EOF}
 
 pushd .%{gem_instdir}
 %patch1 -p1
@@ -74,7 +85,7 @@ find %{buildroot}%{gem_instdir}/lib/bundler/templates/newgem/bin -type f | xargs
 chmod 755 %{buildroot}%{gem_instdir}/lib/bundler/templates/Executable*
 
 # Remove bundled libraries
-rm -rf %{buildroot}/%{gem_libdir}/bundler/vendor
+rm -rf %{buildroot}%{gem_libdir}/bundler/vendor/*
 
 # Man pages are used by Bundler internally, do not remove them!
 mkdir -p %{buildroot}%{_mandir}/man5
@@ -114,6 +125,20 @@ EOF` rspec spec/
 
 %endif
 
+%post
+# Create symlinks to system RubyGems as a replacement for vendored libs
+# See rhbz#1163039
+%symlink_vendored_libs
+
+%postun
+# Remove the symlinks for vendored libs after uninstallation
+rm -f %{gem_libdir}/bundler/vendor/*
+
+%triggerpostun -- rubygem-thor, rubygem-net-http-persistent
+# We need to recreate the symlinks after the old package of vendored lib
+# has been removed, not before
+%symlink_vendored_libs
+
 %files
 %dir %{gem_instdir}
 %exclude %{gem_instdir}/.*
@@ -122,6 +147,7 @@ EOF` rspec spec/
 %doc %{gem_instdir}/LICENSE.md
 %{gem_instdir}/.travis.yml
 %{_bindir}/bundle
+%{_bindir}/bundler
 %{gem_instdir}/bin
 %exclude %{gem_cache}
 %{gem_spec}
@@ -133,7 +159,7 @@ EOF` rspec spec/
 %doc %{gem_instdir}/ISSUES.md
 %doc %{gem_instdir}/README.md
 %doc %{gem_instdir}/UPGRADING.md
-%doc %{gem_instdir}/CONTRIBUTE.md
+%doc %{gem_instdir}/DEVELOPMENT.md
 %doc %{gem_instdir}/CONTRIBUTING.md
 %{gem_instdir}/Rakefile
 %{gem_instdir}/spec
@@ -144,8 +170,17 @@ EOF` rspec spec/
 * Mon Nov 24 2014 Joe Rafaniello <jrafanie@redhat.com> - 1.7.7-1
 - Update to upstream 1.7.7.
 
-* Wed Sep 05 2013 Mo Morsi <mmorsi@redhat.com> - 1.3.5-3
-- Rebuilt for rhel
+* Wed Nov 12 2014 Josef Stribny <jstribny@redhat.com> - 1.7.6-1
+- Update to 1.7.6
+
+* Tue Nov 11 2014 Josef Stribny <jstribny@redhat.com> - 1.7.3-3
+- Use symlinks for vendored libraries (rhbz#1163039)
+
+* Thu Oct 16 2014 Josef Stribny <jstribny@redhat.com> - 1.7.3-2
+- Fix: load extensions correctly for both old and new RubyGems
+
+* Thu Sep 25 2014 Josef Stribny <jstribny@redhat.com> - 1.7.3-1
+- Update to 1.7.3
 
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.5-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
