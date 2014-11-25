@@ -20,9 +20,9 @@ BuildRequires:  %{?scl_prefix}rubygem(minitest)
 
 Requires:       %{?scl_prefix}ruby(release)
 Requires:       %{?scl_prefix}ruby(rubygems)
-BuildArch:	noarch
+BuildArch:     noarch
 
-Provides:	%{?scl_prefix}rubygem(%{gem_name}) = %{version}
+Provides:      %{?scl_prefix}rubygem(%{gem_name}) = %{version}
 
 %description
 Persistent connections using Net::HTTP plus a speed fix for 1.8.  It's
@@ -40,15 +40,8 @@ This package contains documentation for %{pkg_name}.
 %prep
 %setup -n %{pkg_name}-%{version} -q -c -T
 
-mkdir -p .%{gem_dir}
 %{?scl:scl enable %{scl} "}
-gem install \
-	-V \
-	--local \
-	--install-dir $(pwd)/%{gem_dir} \
-	--force \
-	--rdoc \
-	%{SOURCE0}
+%gem_install -n %{SOURCE0}
 %{?scl:"}
 
 pushd .%{gem_instdir}
