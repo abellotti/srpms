@@ -21,7 +21,7 @@ done
 Summary: Library and utilities to manage a Ruby application's gem dependencies
 Name: %{?scl_prefix}rubygem-%{gem_name}
 Version: 1.7.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://gembundler.com
@@ -167,6 +167,9 @@ rm -f %{gem_libdir}/bundler/vendor/*
 %doc %{gem_docdir}
 
 %changelog
+* Tue Nov 25 2014 Joe Rafaniello <jrafanie@redhat.com> - 1.7.7-2
+- Rebuild with fixed Requires (can't run f21.rb from fermig for epel6)
+
 * Mon Nov 24 2014 Joe Rafaniello <jrafanie@redhat.com> - 1.7.7-1
 - Update to upstream 1.7.7.
 

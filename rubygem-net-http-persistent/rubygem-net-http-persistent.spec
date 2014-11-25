@@ -6,7 +6,7 @@
 Summary:	Persistent connections using Net::HTTP plus a speed fix
 Name:		%{?scl_prefix}rubygem-%{gem_name}
 Version:	2.9.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Group:		Development/Languages
 License:	MIT
 
@@ -78,6 +78,9 @@ rm -f %{buildroot}%{gem_instdir}/{.autotest,.gemtest}
 %{gem_instdir}/test/
 
 %changelog
+* Tue Nov 25 2014 Joe Rafaniello <jrafanie@redhat.com> - 2.9.4-2
+- Rebuild with fixed Requires (can't run f21.rb from fermig for epel6)
+
 * Mon Nov 24 2014 Joe Rafanielloa <jrafanie@redhat.com> - 2.9.4-1
 - Update to upstream 2.9.4. Disable running testrb
 

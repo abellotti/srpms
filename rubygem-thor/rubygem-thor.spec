@@ -10,7 +10,7 @@
 Summary: Scripting framework that replaces rake, sake and rubigen
 Name: %{?scl_prefix}rubygem-%{gem_name}
 Version: 0.19.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Group: Development/Languages
 License: MIT
 URL: http://whatisthor.com/
@@ -103,6 +103,9 @@ popd
 %{gem_instdir}/thor.gemspec
 
 %changelog
+* Tue Nov 25 2014 Joe Rafaniello <jrafanie@redhat.com> - 0.19.1-2
+- Rebuild with fixed Requires (can't run f21.rb from fermig for epel6)
+
 * Mon Nov 24 2014 Joe Rafaniello <jrafanie@redhat.com> - 0.19.1-1
 - Update to upstream 0.19.1
 - Update for use with ruby 2.
