@@ -43,9 +43,9 @@ This package contains documentation for %{name}.
 %prep
 %setup -q -c -T
 
-%{?scl:scl enable %{scl} "}
+%{?scl:scl enable %scl - << \EOF}
 %gem_install -n %{SOURCE0}
-%{?scl:"}
+%{?scl:EOF}
 
 %build
 
