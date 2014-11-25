@@ -21,12 +21,12 @@ BuildRequires:  %{?scl_prefix}ruby(release)
 BuildRequires:  %{?scl_prefix}rubygems-devel
 BuildRequires:  %{?scl_prefix}ruby(release)
 %if %{enable_test} > 0
-BuildRequires: %{?scl_prefix}rubygem(rspec)
-BuildRequires: %{?scl_prefix}rubygem(fakeweb)
-BuildRequires: git
+BuildRequires:  %{?scl_prefix}rubygem(rspec)
+BuildRequires:  %{?scl_prefix}rubygem(fakeweb)
+BuildRequires:  git
 %endif
-BuildArch: noarch
-Provides: %{?scl_prefix}rubygem(%{gem_name}) = %{version}
+BuildArch:      noarch
+Provides:       %{?scl_prefix}rubygem(%{gem_name}) = %{version}
 
 %description
 Thor is a scripting framework that replaces rake, sake and rubigen.
@@ -44,9 +44,7 @@ This package contains documentation for %{name}.
 %setup -q -c -T
 
 %{?scl:scl enable %{scl} "}
-gem install --local --install-dir .%{gem_dir} \
-            --bindir .%{_bindir} \
-            --force %{SOURCE0}
+%gem_install -n %{SOURCE0}
 %{?scl:"}
 
 %build
