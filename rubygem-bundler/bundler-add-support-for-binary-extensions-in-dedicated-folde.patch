@@ -1,0 +1,22 @@
+gedidiff --git a/lib/bundler/rubygems_ext.rb b/lib/bundler/rubygems_ext.rb
+index e9c9af2..912743f 100644
+--- a/lib/bundler/rubygems_ext.rb
++++ b/lib/bundler/rubygems_ext.rb
+@@ -36,13 +36,16 @@ module Gem
+     def load_paths
+       return full_require_paths if respond_to?(:full_require_paths)
+ 
+-      require_paths.map do |require_path|
++      paths = require_paths.map do |require_path|
+         if require_path.include?(full_gem_path)
+           require_path
+         else
+           File.join(full_gem_path, require_path)
+         end
+       end
++
++      paths << File.join(ext_dir, require_paths.first) if self.respond_to?(:ext_dir) && !extensions.empty?
++      paths
+     end
+ 
+     if method_defined?(:extension_dir)
